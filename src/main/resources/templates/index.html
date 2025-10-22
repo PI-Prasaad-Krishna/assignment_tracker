@@ -7,7 +7,9 @@
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Link to the external JavaScript file -->
-    <script src="/test.js" defer></script>
+    <script>
+        document.write('<script src="/test.js?t=' + new Date().getTime() + '"><\/script>');
+    </script>
     <style>
         .message {
             display: none;
