@@ -1,9 +1,16 @@
 package com.example.assignment_tracker.model;
 
-import jakarta.persistence.*;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Entity // Tells JPA this is a database table
 @Data   // From Lombok: creates getters, setters, toString, etc.
@@ -18,6 +25,7 @@ public class Student {
     private String department;
 
     // Establishes the relationship: One Student can have Many Submissions
-    @OneToMany(mappedBy = "student") 
+    @OneToMany(mappedBy = "student")
+    @JsonManagedReference("student-submissions")
     private List<Submission> submissions;
 }

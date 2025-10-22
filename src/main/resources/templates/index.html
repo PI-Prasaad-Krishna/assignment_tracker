@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/test.js"></script>
+    <style>
+        /* Simple style for loading and error messages */
+        .message {
+            display: none;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .message.success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- === COLUMN 1: CREATE ITEMS === -->
+        <div class="space-y-8">
+            
+            <!-- Create Faculty Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Faculty</h2>
+                <form id="form-faculty" class="space-y-4">
+                    <div>
+                        <label for="faculty-name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" id="faculty-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="faculty-email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="faculty-email" name="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="faculty-dept" class="block text-sm font-medium text-gray-700">Department</label>
+                        <input type="text" id="faculty-dept" name="department" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Create Faculty</button>
+                </form>
+            </div>
+
+            <!-- Create Student Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Student</h2>
+                <form id="form-student" class="space-y-4">
+                    <div>
+                        <label for="student-name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" id="student-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="student-email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="student-email" name="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="student-dept" class="block text-sm font-medium text-gray-700">Department</label>
+                        <input type="text" id="student-dept" name="department" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Create Student</button>
+                </form>
+            </div>
+
+            <!-- Create Assignment Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Assignment</h2>
+                <form id="form-assignment" class="space-y-4">
+                    <div>
+                        <label for="assign-title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" id="assign-title" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="assign-desc" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="assign-desc" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="assign-date" class="block text-sm font-medium text-gray-700">Due Date</label>
+                        <input type="date" id="assign-date" name="dueDate" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="assign-faculty" class="block text-sm font-medium text-gray-700">Assigning Faculty</label>
+                        <select id="assign-faculty" name="facultyId" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Loading faculty...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Create Assignment</button>
+                </form>
+            </div>
+             
+            <!-- Message Banners -->
+            <div id="message-banner" class="message"></div>
+
+        </div>
+
+        <!-- === COLUMN 2: DATA LISTS === -->
+        <div class="space-y-8">
+
+            <!-- Assignments List -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Current Assignments</h2>
+                <ul id="list-assignments" class="space-y-3">
+                    <li class="text-gray-500">Loading assignments...</li>
+                </ul>
+            </div>
+
+            <!-- Submissions List -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">All Submissions</h2>
+                <ul id="list-submissions" class="space-y-3">
+                    <li class="text-gray-500">Loading submissions...</li>
+                </ul>
+            </div>
+
+            <!-- Faculty List -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Faculty</h2>
+                <ul id="list-faculty" class="space-y-3">
+                    <li class="text-gray-500">Loading faculty...</li>
+                </ul>
+            </div>
+
+            <!-- Student List -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Students</h2>
+                <ul id="list-students" class="space-y-3">
+                    <li class="text-gray-500">Loading students...</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        const API_BASE = window.location.origin; // e.g., http://localhost:8080
+
+        // === Form & Message Elements ===
+        const facultyForm = document.getElementById('form-faculty');
+        const studentForm = document.getElementById('form-student');
+        const assignmentForm = document.getElementById('form-assignment');
+        const messageBanner = document.getElementById('message-banner');
+
+        // === List Elements ===
+        const facultyList = document.getElementById('list-faculty');
+        const studentList = document.getElementById('list-students');
+        const assignmentList = document.getElementById('list-assignments');
+        const submissionList = document.getElementById('list-submissions');
+        const assignmentFacultySelect = document.getElementById('assign-faculty');
+
+        // === Utility Functions ===
+        
+        /** Shows a success or error message */
+        function showMessage(type, text) {
+            messageBanner.textContent = text;
+            messageBanner.className = `message show ${type}`;
+            setTimeout(() => {
+                messageBanner.className = 'message';
+            }, 3000);
+        }
+
+        /** Helper for making API calls */
+        async function apiFetch(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                if (response.status === 204) return null; // Handle No Content
+                return await response.json();
+            } catch (error) {
+                console.error(`Failed to fetch ${endpoint}:`, error);
+                showMessage('error', `Error: ${error.message}`);
+                throw error;
+            }
+        }
+
+        // === Data Loading Functions ===
+        
+        async function loadFaculty() {
+            try {
+                const faculty = await apiFetch('/api/faculty');
+                facultyList.innerHTML = '';
+                assignmentFacultySelect.innerHTML = '<option value="">Select a faculty member</option>';
+                
+                if (faculty.length === 0) {
+                    facultyList.innerHTML = '<li class="text-gray-500">No faculty found.</li>';
+                }
+
+                faculty.forEach(f => {
+                    const li = document.createElement('li');
+                    li.className = 'p-3 bg-gray-50 rounded-md';
+                    li.innerHTML = `<span class="font-medium">${f.name}</span> <span class="text-gray-600">(${f.email})</span>`;
+                    facultyList.appendChild(li);
+
+                    const option = document.createElement('option');
+                    option.value = f.id;
+                    option.textContent = `${f.name} (ID: ${f.id})`;
+                    assignmentFacultySelect.appendChild(option);
+                });
+            } catch (e) {
+                facultyList.innerHTML = '<li class="text-red-500">Failed to load faculty.</li>';
+            }
+        }
+        
+        async function loadStudents() {
+            try {
+                const students = await apiFetch('/api/students');
+                studentList.innerHTML = '';
+
+                if (students.length === 0) {
+                    studentList.innerHTML = '<li class="text-gray-500">No students found.</li>';
+                }
+
+                students.forEach(s => {
+                    const li = document.createElement('li');
+                    li.className = 'p-3 bg-gray-50 rounded-md';
+                    li.innerHTML = `<span class="font-medium">${s.name}</span> <span class="text-gray-600">(${s.email})</span>`;
+                    studentList.appendChild(li);
+                });
+            } catch (e) {
+                studentList.innerHTML = '<li class="text-red-500">Failed to load students.</li>';
+            }
+        }
+
+        async function loadAssignments() {
+            try {
+                const assignments = await apiFetch('/api/assignments');
+                assignmentList.innerHTML = '';
+
+                if (assignments.length === 0) {
+                    assignmentList.innerHTML = '<li class="text-gray-500">No assignments found.</li>';
+                }
+
+                assignments.forEach(a => {
+                    const li = document.createElement('li');
+                    li.className = 'p-3 bg-gray-50 rounded-md';
+                    li.innerHTML = `
+                        <div class="font-medium">${a.title} (ID: ${a.id})</div>
+                        <div class="text-sm text-gray-600">${a.description}</div>
+                        <div class="text-sm text-red-600">Due: ${a.dueDate}</div>
+                    `;
+                    assignmentList.appendChild(li);
+                });
+            } catch (e) {
+                assignmentList.innerHTML = '<li class="text-red-500">Failed to load assignments.</li>';
+            }
+        }
+
+        async function loadSubmissions() {
+             try {
+                // This is a bit inefficient, but we'll just get all assignments and then all submissions for each
+                // A better API would be "/api/submissions/all"
+                // For now, let's just get submissions for assignment 1 as a demo
+                // NOTE: This assumes an assignment with ID 1 exists.
+                // A more robust solution would be needed for a real app.
+                submissionList.innerHTML = '<li class="text-gray-500">To view submissions, please check by assignment ID.</li>';
+                
+                // Let's create a better function
+                // Let's try to get *all* submissions. We need an endpoint for that.
+                // Our current controller has /api/submissions/assignment/{id}
+                // Let's modify our submission controller!
+                // ... For now, we'll just show submissions for Assignment 1
+                
+                try {
+                    const submissions = await apiFetch('/api/submissions/assignment/1');
+                    submissionList.innerHTML = '<li><b>Submissions for Assignment 1:</b></li>';
+                    if(submissions.length === 0) {
+                        submissionList.innerHTML += '<li class="text-gray-500">No submissions yet for Asmt 1.</li>';
+                    }
+                    submissions.forEach(s => {
+                        const li = document.createElement('li');
+                        li.className = 'p-3 bg-gray-50 rounded-md';
+                        li.innerHTML = `
+                            <div class="font-medium">Submission ID: ${s.id}</div>
+                            <div class="text-sm text-gray-600">Student ID: ${s.studentId}</div>
+                            <div class="text-sm text-blue-600">URL: ${s.fileUrl}</div>
+                            <div class="text-sm text-gray-500">Status: ${s.status}</div>
+                        `;
+                        submissionList.appendChild(li);
+                    });
+                } catch(e) {
+                     submissionList.innerHTML = '<li class="text-gray-500">No submissions found (or Asmt 1 does not exist).</li>';
+                }
+                
+
+            } catch (e) {
+                submissionList.innerHTML = '<li class="text-red-500">Failed to load submissions.</li>';
+            }
+        }
+
+        /** Load all data when the page loads */
+        function loadAllData() {
+            loadFaculty();
+            loadStudents();
+            loadAssignments();
+            loadSubmissions();
+        }
+
+        // === Event Listeners for Forms ===
+        
+        facultyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(facultyForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                await apiFetch('/api/faculty', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                showMessage('success', 'Faculty created successfully!');
+                facultyForm.reset();
+                loadFaculty(); // Refresh list
+            } catch (error) {
+                showMessage('error', 'Failed to create faculty.');
+            }
+        });
+
+        studentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(studentForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                await apiFetch('/api/students', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                showMessage('success', 'Student created successfully!');
+                studentForm.reset();
+                loadStudents(); // Refresh list
+            } catch (error) {
+                showMessage('error', 'Failed to create student.');
+            }
+        });
+
+        assignmentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(assignmentForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Convert facultyId to a number
+            data.facultyId = parseInt(data.facultyId, 10);
+            
+            try {
+                await apiFetch('/api/assignments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                showMessage('success', 'Assignment created successfully!');
+                assignmentForm.reset();
+                loadAssignments(); // Refresh list
+            } catch (error) {
+                showMessage('error', 'Failed to create assignment.');
+            }
+        });
+
+
+        // === Initial Load ===
+        document.addEventListener('DOMContentLoaded', loadAllData);
+    </script>
+</body>
+</html>
