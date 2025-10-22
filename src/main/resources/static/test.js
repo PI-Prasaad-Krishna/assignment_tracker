@@ -207,18 +207,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const students = await api.getStudents();
 
             // Sort submissions by latest first  
-            submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+            submissions.sort((a, b) => new Date(b.submittedDate) - new Date(a.submittedDate));
             
             submissionList.innerHTML = submissions.map(s => {
-                const assignmentId = s.assignment ? s.assignment.id : null;
-                const studentId = s.student ? s.student.id : null;
+                const assignmentId = s.assignmentId;
+                const studentId = s.studentId;
                 const assignment = assignmentId ? assignments.find(a => a.id === assignmentId) : null;
                 const student = studentId ? students.find(st => st.id === studentId) : null;
                 return `
                 <div class="p-4 bg-white rounded-lg shadow mb-2">
                     <h3 class="font-bold">Assignment: ${assignment ? assignment.title : 'Unknown'}</h3>
                     <p class="text-gray-600">By: ${student ? student.name : 'Unknown'}</p>
-                    <p class="text-sm">Submitted: ${new Date(s.submittedAt).toLocaleString()}</p>
+                    <p class="text-sm">Submitted: ${new Date(s.submittedDate).toLocaleString()}</p>
                     <p class="text-sm">Status: ${s.status || 'N/A'}</p>
                     ${s.fileUrl ? `<a href="${s.fileUrl}" class="text-blue-600 hover:underline" target="_blank">View Submission</a>` : ''}
                 </div>
