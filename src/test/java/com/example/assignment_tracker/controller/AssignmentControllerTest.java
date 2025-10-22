@@ -21,17 +21,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AssignmentController.class) // Tell Spring Boot to only test this controller
+@WebMvcTest(AssignmentController.class)
 class AssignmentControllerTest {
 
     @Autowired
-    private MockMvc mockMvc; // This object lets us simulate HTTP requests
+    private MockMvc mockMvc;
 
-    @MockBean // Creates a mock of the service and adds it to the Spring context
+    @MockBean
     private AssignmentService assignmentService;
 
     @Autowired
-    private ObjectMapper objectMapper; // Helper to convert Java objects to JSON strings
+    private ObjectMapper objectMapper;
 
     private Assignment testAssignment;
 

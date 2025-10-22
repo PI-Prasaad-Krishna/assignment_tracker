@@ -69,17 +69,32 @@ public class AssignmentController {
     @PostMapping
     public ResponseEntity<Assignment> createAssignment(@RequestBody Map<String, Object> payload) {
         // This is simplified. A DTO (Data Transfer Object) is the recommended approach.
-        
-        // FIX: Cast directly from Number to avoid unnecessary String conversion
-        Long facultyId = ((Number) payload.get("facultyId")).longValue();
-        
-        Assignment assignment = new Assignment();
-        assignment.setTitle(payload.get("title").toString());
-        assignment.setDescription(payload.get("description").toString());
-        assignment.setDueDate(LocalDate.parse(payload.get("dueDate").toString()));
+        try {
+            // Validate and extract fields
+            String title = (String) payload.get("title");
+            String description = (String) payload.get("description");
+            String dueDateStr = (String) payload.get("dueDate");
+            if (title == null || dueDateStr == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
 
-        Assignment createdAssignment = assignmentService.createAssignment(assignment, facultyId);
-        return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> faculty = (Map<String, Object>) payload.get("faculty");
+            if (faculty == null || !(faculty.get("id") instanceof Number)) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            Long facultyId = ((Number) faculty.get("id")).longValue();
+
+            Assignment assignment = new Assignment();
+            assignment.setTitle(title);
+            assignment.setDescription(description);
+            assignment.setDueDate(LocalDate.parse(dueDateStr));
+
+            Assignment createdAssignment = assignmentService.createAssignment(assignment, facultyId);
+            return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     /**

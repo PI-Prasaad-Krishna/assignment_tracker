@@ -81,6 +81,14 @@ public class SubmissionService {
     }
 
     /**
+     * Gets all submissions.
+     * @return A list of all submissions.
+     */
+    public List<Submission> getAllSubmissions() {
+        return submissionRepository.findAll();
+    }
+
+    /**
      * Allows faculty to grade a submission.
      * @param submissionId The ID of the submission to grade.
      * @return The graded submission.

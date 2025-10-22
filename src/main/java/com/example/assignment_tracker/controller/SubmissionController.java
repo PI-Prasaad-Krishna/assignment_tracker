@@ -74,6 +74,16 @@ public class SubmissionController {
     }
 
     /**
+     * GET /api/submissions
+     * Gets all submissions.
+     * @return A list of all submissions.
+     */
+    @GetMapping
+    public List<Submission> getAllSubmissions() {
+        return submissionService.getAllSubmissions();
+    }
+
+    /**
      * PATCH /api/submissions/{id}/grade
      * Marks a submission as graded.
      * @param id The ID of the submission.
