@@ -1,6 +1,7 @@
 package com.example.assignment_tracker.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class SubmissionService {
      * @param studentId The ID of the student.
      * @param fileUrl The URL of the uploaded file.
      * @return The new submission.
+     * @throws EntityNotFoundException if student or assignment is not found
+     * @throws IllegalStateException if submission deadline has passed or student already submitted
      */
     public Submission submitAssignment(Long assignmentId, Long studentId, String fileUrl) {
         // Find the student
@@ -44,11 +47,14 @@ public class SubmissionService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Assignment not found with id: " + assignmentId));
 
+        // Check if student already submitted this assignment
+        if (submissionRepository.existsByStudentAndAssignment(student, assignment)) {
+            throw new IllegalStateException("Student already submitted this assignment");
+        }
+
         // Check if the due date has passed
         if (LocalDate.now().isAfter(assignment.getDueDate())) {
-            // You could throw an exception or just mark it as LATE
-            // For now, we'll just throw an error
-            throw new IllegalStateException("The deadline for this assignment has passed.");
+            throw new IllegalStateException("Assignment submission deadline has passed");
         }
 
         // Create the new submission
@@ -56,7 +62,7 @@ public class SubmissionService {
         submission.setStudent(student);
         submission.setAssignment(assignment);
         submission.setFileUrl(fileUrl);
-        submission.setSubmittedDate(LocalDate.now());
+        submission.setSubmittedAt(LocalDateTime.now());
         submission.setStatus(SubmissionStatus.SUBMITTED);
 
         return submissionRepository.save(submission);

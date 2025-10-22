@@ -1,9 +1,8 @@
 package com.example.assignment_tracker.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,20 +27,20 @@ public class Submission {
     private Long id;
     
     private String fileUrl;
-    private LocalDate submittedDate;
+    private LocalDateTime submittedAt;
     
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)  // Changed to EAGER loading
     @JoinColumn(name = "student_id")
     @ToString.Exclude
     @JsonBackReference("student-submissions")
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)  // Changed to EAGER loading
     @JoinColumn(name = "assignment_id")
     @ToString.Exclude
-    @JsonBackReference("assignment-submissions")
+    @JsonBackReference
     private Assignment assignment;
 }

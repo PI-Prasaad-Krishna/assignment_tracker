@@ -1,7 +1,7 @@
 package com.example.assignment_tracker.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class Assignment {
     private LocalDate dueDate; // Uses Java's modern date type
 
     // Establishes the relationship: Many Assignments can belong to One Faculty
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY = don't load the Faculty object until we ask for it
+    @ManyToOne(fetch = FetchType.EAGER) // Changed to EAGER loading
     @JoinColumn(name = "faculty_id") // This creates the 'faculty_id' foreign key column
     @ToString.Exclude
     @JsonBackReference("faculty-assignments")
@@ -31,6 +31,6 @@ public class Assignment {
     // One Assignment can have Many Submissions
     @OneToMany(mappedBy = "assignment")
     @ToString.Exclude
-    @JsonManagedReference("assignment-submissions")
+    @JsonManagedReference
     private List<Submission> submissions;
 }

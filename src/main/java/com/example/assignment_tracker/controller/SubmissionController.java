@@ -42,10 +42,31 @@ public class SubmissionController {
      */
     @PostMapping
     public ResponseEntity<Submission> submitAssignment(@RequestBody Map<String, Object> payload) {
-        // FIX: Cast directly from Number to avoid unnecessary String conversion
-        Long assignmentId = ((Number) payload.get("assignmentId")).longValue();
-        Long studentId = ((Number) payload.get("studentId")).longValue();
+        Long assignmentId;
+        Long studentId;
+        
+        // Handle both nested objects and flat IDs
+        if (payload.containsKey("assignment")) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> assignment = (Map<String, Object>) payload.get("assignment");
+            assignmentId = ((Number) assignment.get("id")).longValue();
+        } else {
+            assignmentId = ((Number) payload.get("assignmentId")).longValue();
+        }
+        
+        if (payload.containsKey("student")) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> student = (Map<String, Object>) payload.get("student");
+            studentId = ((Number) student.get("id")).longValue();
+        } else {
+            studentId = ((Number) payload.get("studentId")).longValue();
+        }
+
         String fileUrl = payload.get("fileUrl").toString();
+
+        if (assignmentId == null || studentId == null || fileUrl == null) {
+            throw new IllegalArgumentException("Missing required fields: assignmentId, studentId, and fileUrl are required");
+        }
 
         Submission newSubmission = submissionService.submitAssignment(assignmentId, studentId, fileUrl);
         return new ResponseEntity<>(newSubmission, HttpStatus.CREATED);

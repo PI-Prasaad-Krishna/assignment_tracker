@@ -116,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const populateStudentDropdown = async () => {
         try {
             const students = await api.getStudents();
+            if (!submissionStudentSelect) {
+                console.warn('submissionStudentSelect not found in DOM');
+                return;
+            }
+            console.debug('populateStudentDropdown: fetched', students.length, 'students');
             submissionStudentSelect.innerHTML = `
                 <option value="">Select Student</option>
                 ${students.map(s => `<option value="${s.id}">${s.name} - ${s.department}</option>`).join('')}
@@ -200,10 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const submissions = await api.getSubmissions();
             submissionList.innerHTML = submissions.map(s => `
                 <div class="p-4 bg-white rounded-lg shadow mb-2">
-                    <h3 class="font-bold">Submission for Assignment ${s.assignment.title}</h3>
-                    <p class="text-gray-600">By: ${s.student.name}</p>
-                    <p class="text-sm">Submitted: ${s.submittedDate}</p>
-                    <p class="text-sm">Status: ${s.status}</p>
+                    <h3 class="font-bold">Submission for Assignment ${s.assignment?.title || 'Unknown'}</h3>
+                    <p class="text-gray-600">By: ${s.student?.name || 'Unknown'}</p>
+                    <p class="text-sm">Submitted: ${s.submittedAt || 'N/A'}</p>
+                    <p class="text-sm">Status: ${s.status || 'N/A'}</p>
                     ${s.fileUrl ? `<a href="${s.fileUrl}" class="text-blue-600 hover:underline" target="_blank">View Submission</a>` : ''}
                 </div>
             `).join('');
@@ -244,6 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.reset();
             showMessage('Student created successfully');
             await renderStudentList();
+            // Also refresh the submission student dropdown so newly created students appear
+            await populateStudentDropdown();
         } catch (error) {
             handleError(error);
         }
